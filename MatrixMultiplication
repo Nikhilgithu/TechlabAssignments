@@ -1,0 +1,54 @@
+package com.techlab.game;
+
+import java.util.Scanner;
+
+public class MatrixMultiplication {
+
+	public static void main(String[] args) {
+		 Scanner sc=new Scanner (System.in);
+	     System.out.println("enter the size of array m and n");
+	     int m=sc.nextInt();
+	     int n=sc.nextInt();
+			
+			int arr [][]=new int[m][n];
+			int ary [][]=new int[m][n];
+			int result[][]=new int[m][n];
+			System.out.println("enetr elements");
+			for(int i=0;i<m;i++)
+			{
+				for(int j=0;j<n;j++)
+				{
+					arr[i][j]=sc.nextInt();
+					
+				}
+			}
+			System.out.println("enter element for ary2");
+			for(int i=0;i<m;i++)
+			{
+				for(int j=0;j<n;j++)
+				{
+					ary[i][j]=sc.nextInt();
+					
+				}
+			}
+			
+			for (int i = 0; i < m; i++) {
+	            for (int j = 0; j < n; j++) {
+	                for (int k = 0; k < m; k++) {
+	                	result[i][j] =result[i][j]+(ary[i][k]*arr[k][j]);
+	                }
+	            }
+	        }
+			for(int i=0;i<m;i++)0
+			{
+				for(int j=0;j<n;j++)
+				{
+					System.out.print(result[i][j]+" ");
+					
+				}
+				System.out.println("");
+			}		
+			
+	}
+
+}
