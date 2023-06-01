@@ -1,0 +1,39 @@
+package com.techlab.controlStat;
+
+import java.util.Scanner;
+
+public class TresureHunt {
+
+	public static void main(String[] args) {
+		Scanner sc =new Scanner(System.in);
+		System.out.println("welcome to treasure island your mission is to find the treasure");
+		
+		System.out.println("left or right=");
+		String LeftRight=sc.next();
+		if(LeftRight.equals("Right"))
+			System.out.println("fall into a hole game over");
+		else
+		{
+			System.out.println("Swim or Wait=");
+			String SwimWait=sc.next();
+			if(SwimWait.equals("Swim"))
+			{
+				System.out.println("attack by trout.gameover");
+			}
+			else
+				System.out.println("whichdoor=");
+				String whichdoor=sc.next();
+				if(whichdoor.equals("red"))
+					System.out.println("burned by fire game over");
+				else if(whichdoor.equals("blue"))
+					System.out.println("eaten by beasts");
+				else if(whichdoor.equals("yellow"))
+					System.out.println("you win");
+				else
+					System.out.println("gameover");
+				
+		}
+
+	}
+
+}
