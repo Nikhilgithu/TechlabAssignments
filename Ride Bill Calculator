@@ -1,0 +1,43 @@
+package com.techlab.iterations;
+
+import java.util.Scanner;
+
+public class RideBillCalculator {
+
+	public static void main(String[] args) {
+		int totalBill = 0;
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Enter height:");
+		int height = sc.nextInt();
+
+		if (height < 120) {
+		    System.out.println("You can't ride.");
+		} else {
+		    System.out.println("Enter age:");
+		    int age = sc.nextInt();
+		    
+		    System.out.println("Do you want photos? (Enter 1 for yes)");
+		    int photo = sc.nextInt();
+
+		    if (age < 12) {
+		        totalBill += 5;
+		    } else if (age < 18) {
+		        totalBill += 7;
+		    } else if (age < 45) {
+		        totalBill += 12;
+		    }
+
+		    if (photo == 1) {
+		        totalBill += 3;
+		    }
+
+		    if (age >= 55) {
+		        System.out.println("Age limit is exceeded.");
+		    } else {
+		        System.out.println("Total Bill: " + totalBill+"$");
+		    }
+		}
+	}
+
+}
