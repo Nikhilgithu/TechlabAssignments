@@ -1,0 +1,17 @@
+package com.techlab.controlStat;
+
+public class WaterBill {
+
+	public static void main(String[] args) {
+		int MeterCharge=75;
+		int UnitsConsume=Integer.parseInt(args[0]);
+		if(UnitsConsume<=100)
+			System.out.println("totalbill will be="+UnitsConsume*5);
+		else if(UnitsConsume<=250)
+			System.out.println("totalbill will be="+UnitsConsume*10);
+		else
+			System.out.println("totalbill will be="+UnitsConsume*20);
+
+	}
+
+}
