@@ -1,0 +1,69 @@
+package com.techlab.randomWord;
+
+import java.util.Random;
+import java.util.Scanner;
+public class RandomWord {
+
+	public static void main(String[] args) {
+		 String[] words = {"yash", "nikhil", "jay", "pratik", "prathmesh","kundan","sharyan"};
+	        Random random = new Random();
+	        String randomword=words[random.nextInt(7)];
+	       int lives=randomword.length();
+	       
+	       char[] space = new char[randomword.length()];
+	        for (int i = 0; i < space.length; i++) {
+	            space[i] = '_';
+	        }
+	        
+	       
+	       System.out.println("random word is:"+randomword);
+	       Scanner sc =new Scanner (System.in);
+	 
+	       int j=0;
+	       while(lives>0)
+		 	{
+	    	   System.out.println("guess a letter ");
+	    	   for (int i = 0; i < space.length; i++) {
+		            System.out.print(" "+(space[i]));
+		        }
+	    	   char guessletter=sc.next().charAt(0);
+	    	   boolean letterfound = false;
+	    	   
+	    		   
+				if(randomword.charAt(j)==guessletter)
+				{
+					 space[j] = guessletter;
+	                    letterfound = true;
+	                    j++;
+				}
+				
+	    	 
+	    	   
+		 	
+	       if(letterfound==true)
+	       
+	    	   System.out.println("you have guessed right letter");
+	       else
+	       {
+	    	  System.out.println("you have guessed wrong letter "); 
+	    	  lives--;
+	    	  System.out.println("lives:"+lives);
+	       }
+	       
+	       if(lives==0) {
+	    	   System.out.println("you lose the game as youare out of lives");
+	    	   break;
+	       }
+		 	
+	       if (String.valueOf(space).equals(randomword)) {
+               System.out.println("You won");
+               break;
+	       }
+		 	}
+         
+	     }
+	       
+	}
+
+	
+
