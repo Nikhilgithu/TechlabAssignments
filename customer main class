@@ -1,0 +1,45 @@
+package com.techlab.customer;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class setcustomer {
+
+	public static void main(String[] args) {
+	   
+	   Scanner sc=new Scanner (System.in);
+	   System.out.print("Enter the number of customers: ");
+       int n = sc.nextInt();
+       customer customers [] = new customer[n];
+       for(int i=0;i<n;i++) {
+	   System.out.print("enter customer name:");
+		String name=sc.next();
+		System.out.print("enter customer id");
+		int customerId=sc.nextInt();
+		System.out.print("enter customer email");
+		String email=sc.next();
+		System.out.print("enter customer password");
+		int password=sc.nextInt();
+	   customers[i]=new customer(customerId,name,email,password);
+       }
+//       Arrays.sort(customers);
+       for (int i = 0; i < n - 1; i++) {
+           for (int j = 0; j < n - i - 1; j++) {
+               if (customers[j].getName().compareTo(customers[j + 1].getName()) > 0) {
+                   customer temp = customers[j];
+                   customers[j] = customers[j + 1];
+                   customers[j + 1] = temp;
+               }
+           }
+       }
+       for (customer customer : customers) {
+           System.out.println("Customer ID: " + customer.getCustomerID());
+           System.out.println("Name: " + customer.getName());
+           System.out.println("Email: " + customer.getEmail());
+           System.out.println("Password: " + customer.getPassword());
+           System.out.println();
+       }
+
+	}
+
+}
