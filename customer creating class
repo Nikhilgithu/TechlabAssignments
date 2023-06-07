@@ -1,0 +1,48 @@
+package com.techlab.customer;
+
+public class customer {
+    private int customerID;
+    private String name;
+    private String Email;
+    private int password;
+    customer()
+    {
+    	
+    }
+    customer(int customerId,String name,String Email,int password)
+    {
+    	this.customerID=customerId;
+    	this.name=name;
+    	this.Email=Email;
+    	this.password=password;
+    }
+	public int getCustomerID() {
+		return customerID;
+	}
+	public void setCustomerID(int customerID) {
+		this.customerID = customerID;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return Email;
+	}
+	public void setEmail(String email) {
+		Email = email;
+	}
+	public int getPassword() {
+		return password;
+	}
+	public void setPassword(int password) {
+		this.password = password;
+	}
+	public String toString()
+	{
+		return "customer name:"+name+"customer email:"+Email+"customer ID:"+customerID+"password:"+password;
+	}
+    
+}
