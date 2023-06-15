@@ -1,0 +1,192 @@
+package Moviecom.techlab.MovieApp;
+
+import java.io.Serializable;
+//----------Movie Class---------------------------
+public class Movie implements Serializable{
+	private int id;
+	private String name;
+	private int year;
+	private String genre;
+	public Movie(int id, String name, int year, String genre) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.year = year;
+		this.genre = genre;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getYear() {
+		return year;
+	}
+	public void setYear(int year) {
+		this.year = year;
+	}
+	public String getGenre() {
+		return genre;
+	}
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+	@Override
+	public String toString() {
+		return "Movie [id=" + id + ", name=" + name + ", year=" + year + ", genre=" + genre + "]";
+	}
+	
+	
+
+}
+//-----------------------------MovieManager class--------------------------
+package Moviecom.techlab.MovieApp;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;	
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MovieManager implements Serializable{
+	private List<Movie> movies;
+	private static final String filepath="C:\\Users\\Admin\\Desktop\\Movies.txt";
+	
+	public MovieManager()
+	{
+		movies=new ArrayList<>();
+		loadMovies();
+	}
+	public void addMovie(Movie movie) {
+        movies.add(movie);
+    }
+
+    public void clearMovies() {
+        movies.clear();
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public int getMovieId() {
+        return movies.size() + 1;
+    }
+
+    public void loadMovies() {
+        try {
+            FileInputStream fileIn = new FileInputStream("C:\\Users\\Admin\\Desktop\\Movies.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            movies = (List<Movie>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error loading movies: " + e.getMessage());
+        }
+    }
+
+    public void saveMovies() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("C:\\Users\\Admin\\Desktop\\Movies.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(movies);
+            out.close();
+            fileOut.close();
+            System.out.println("Movies saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving movies: " + e.getMessage());
+        }
+    }
+}
+
+-----------------------------MovieController class--------------------------
+package Moviecom.techlab.MovieApp;
+
+import java.util.Scanner;
+
+public class MovieController  {
+	private MovieManager manager;
+
+	public MovieController(MovieManager manager) {
+		super();
+		this.manager = manager;
+	}
+	 public void start() {
+	        displayMenu();
+	    }
+	 Scanner scanner =new Scanner(System.in);
+
+	 public void displayMenu() {
+		    System.out.println("Movie Store Menu:");
+	        System.out.println("1. Add a movie");
+	        System.out.println("2. View all movies");
+	        System.out.println("3. Clear all movies");
+	        System.out.println("4. Exit");
+
+	        int choice = scanner.nextInt();
+	        scanner.nextLine(); // Consume the newline character after reading the integer
+
+	        switch (choice) {
+	        case 1:
+                Movie movie = setMovieDetails();
+                manager.addMovie(movie);
+                manager.saveMovies();
+                System.out.println("Movie added successfully.");
+                displayMenu();
+                break;
+            case 2:
+                System.out.println("All Movies:");
+                for (Movie m : manager.getMovies()) {
+                    System.out.println(m);
+                }
+                displayMenu();
+                break;
+            case 3:
+                manager.clearMovies();
+                manager.saveMovies();
+                System.out.println("All movies cleared successfully.");
+                displayMenu();
+                break;
+            case 4:
+                System.out.println("Exiting the Movie Store...");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                displayMenu();
+                break;
+        }
+	    }
+
+	    private Movie setMovieDetails() {
+	        System.out.println("Enter Movie Details:");
+
+	        System.out.print("ID: ");
+	        int id = scanner.nextInt();
+	        scanner.nextLine();
+
+	        System.out.print("Name: ");
+	        String name = scanner.nextLine();
+
+	        System.out.print("Year: ");
+	        int year = scanner.nextInt();
+	        scanner.nextLine();
+
+	        System.out.print("Genre: ");
+	        String genre = scanner.nextLine();
+
+	        return new Movie(id, name, year, genre);
+	    }
+	
+
+}
+
