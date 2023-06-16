@@ -1,0 +1,145 @@
+package com.techlab.Country;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Region {
+	private int RegionID;
+	private String RegionName;
+    List <Country> countries;
+	public Region(int regionID, String regionName) {
+		super();
+		this.RegionID = regionID;
+		this.RegionName = regionName;
+		this.countries =new ArrayList<>();
+	}
+	   public void addCountry(Country country) {
+	        countries.add(country);
+	    }
+
+	    List<Country> getCountries() {
+	        return countries;
+	    }
+
+		public int getRegionID() {
+			return RegionID;
+		}
+		public String getRegionName() {
+			return RegionName;
+		}
+		
+}
+package com.techlab.Country;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Region {
+	private int RegionID;
+	private String RegionName;
+    List <Country> countries;
+	public Region(int regionID, String regionName) {
+		super();
+		this.RegionID = regionID;
+		this.RegionName = regionName;
+		this.countries =new ArrayList<>();
+	}
+	   public void addCountry(Country country) {
+	        countries.add(country);
+	    }
+
+	    List<Country> getCountries() {
+	        return countries;
+	    }
+
+		public int getRegionID() {
+			return RegionID;
+		}
+		public String getRegionName() {
+			return RegionName;
+		}
+	
+	
+}
+package com.techlab.Country;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+public class CountryTest {
+
+	public static void main(String[] args) {
+		Map <Integer,Region> region=new HashMap <>();
+		region.put(1,new Region(1,"Europe"));
+		region.put(2, new Region(2, "Americas"));
+	    region.put(3, new Region(3, "Asia"));
+	    region.put(4, new Region(4, "Middle East and Africa"));
+	    
+	    List<Country> country = new ArrayList<>();
+        country.add(new Country("IT", "Italy", 1));
+        country.add(new Country("JP", "Japan", 3));
+        country.add(new Country("US", "United States of America", 2));
+        country.add(new Country("CA", "Canada", 2));
+        country.add(new Country("CN", "China", 3));
+        country.add(new Country("IN", "India", 3));
+        country.add(new Country("AU", "Australia", 3));
+        country.add(new Country("ZW", "Zimbabwe", 4));
+        country.add(new Country("SG", "Singapore", 3));
+        country.add(new Country("UK", "United Kingdom", 1));
+        country.add(new Country("FR", "France", 1));
+        country.add(new Country("DE", "Germany", 1));
+        country.add(new Country("ZM", "Zambia", 4));
+        country.add(new Country("EG", "Egypt", 4));
+        country.add(new Country("BR", "Brazil", 2));
+        country.add(new Country("CH", "Switzerland", 1));
+        country.add(new Country("NL", "Netherlands", 1));
+        country.add(new Country("MX", "Mexico", 2));
+        country.add(new Country("KW", "Kuwait", 4));
+        country.add(new Country("IL", "Israel", 4));
+        country.add(new Country("DK", "Denmark", 1));
+        country.add(new Country("HK", "Hong Kong", 3));
+        country.add(new Country("NG", "Nigeria", 4));
+        country.add(new Country("AR", "Argentina", 2));
+        country.add(new Country("BE", "Belgium", 1));
+        
+        for (Country country1 : country) {
+            int regionId = country1.getRegionId();
+            if (region.containsKey(regionId)) {
+                Region region1 = region.get(regionId);
+                region1.addCountry(country1);
+            }
+        }
+        
+        for (Region region1 : region.values()) {
+            System.out.println("Region: " + region1.getRegionName());
+            for (Country country1 : region1.getCountries()) {
+                System.out.println("Country: " + country1.getCountryName());
+            }
+            System.out.println();
+        }
+        Scanner sc=new Scanner(System.in);
+        System.out.println("enter the ID of region to see number of countries present in region");
+        int regionIdToCount = sc.nextInt();
+        if (region.containsKey(regionIdToCount)) {
+            Region region1 = region.get(regionIdToCount);
+            long countryCount = region1.getCountries().stream().count();
+            System.out.println("Number of countries in Region " + regionIdToCount + ": " + countryCount);
+        }
+
+        // Accepting regionId and printing countries belonging to that region using streams
+        System.out.println("enetr the region id to see countries present");
+        int regionIdToPrint = sc.nextInt();
+        if (region.containsKey(regionIdToPrint)) {
+            Region region1 = region.get(regionIdToPrint);
+            System.out.println("Countries in Region " + regionIdToPrint + ":");
+            region1.getCountries().stream()
+                    .map(Country::getCountryName)
+                    .forEach(System.out::println);
+        }
+	}
+
+}
+
