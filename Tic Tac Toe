@@ -1,0 +1,99 @@
+package com.techlab.TicTacToe;
+
+public enum MarkType {
+	X,O,EMPTY;
+
+}
+package com.techlab.TicTacToe;
+
+public class Cell {
+	private MarkType mark;
+	public Cell()
+	{
+		this.mark=MarkType.EMPTY;
+	}
+	
+	public boolean isEmpty()
+	{
+		return mark == MarkType.EMPTY;
+		
+	}
+
+	public MarkType getMark() {
+		return mark;
+	}
+
+	public void setMark(MarkType mark)throws CellAlraedyMrakedException
+	{
+		 if (!isEmpty()) {
+	            throw new CellAlraedyMrakedException();
+	        }
+		this.mark = mark;
+	}
+	
+	
+}
+package com.techlab.TicTacToe;
+
+public class CellAlraedyMrakedException extends Exception {
+	public CellAlraedyMrakedException() {
+        super("Cell is already marked");
+    }
+
+}
+package com.techlab.TicTacToe;
+
+public class Board {
+	 Cell [] cell = new Cell[9];
+	public Board() {
+        for (int i = 0; i < cell.length; i++) {
+        	cell[i] = new Cell();
+        }
+    }
+
+    public boolean isBoardFull() {
+        for (Cell cell : cell) {
+            if (cell.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setCellMark(int loc, MarkType mark) throws CellAlraedyMrakedException {
+    	cell[loc].setMark(mark);
+    }
+    public MarkType getMark(int loc) {
+        return cell[loc].getMark();
+    }
+
+
+}
+package com.techlab.TicTacToe;
+
+import java.util.Scanner;
+
+public class TestTicTacToe {
+	private static Board board;
+
+    public static void main(String[] args) {
+    	TestTicTacToe game = new TestTicTacToe();
+    	board = new Board();
+
+        Scanner scanner = new Scanner(System.in);
+        int loc;
+        MarkType currentPlayer = MarkType.X;
+
+        while (!board.isBoardFull()) {
+            System.out.print("Player " + currentPlayer + ", enter your move (0-8): ");
+            loc = scanner.nextInt();
+
+            try {
+                board.setCellMark(loc, currentPlayer);
+                currentPlayer = (currentPlayer == MarkType.X) ? MarkType.O : MarkType.X;
+            } catch (CellAlraedyMrakedException e) {
+                System.out.println("Cell is already marked. Please choose another location.");
+            }
+        }
+    }
+}
