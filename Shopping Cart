@@ -1,0 +1,236 @@
+package com.techlab.shoppingCart;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class Product {
+	    private int id;
+	    private String name;
+	    private double price;
+	    private double discountPercent;
+
+	    public Product(int id, String name, double price, double discountPercent) {
+	        this.id = id;
+	        this.name = name;
+	        this.price = price;
+	        this.discountPercent = discountPercent;
+	    }
+
+
+	    public int getId() {
+	        return id;
+	    }
+
+	    public void setId(int id) {
+	        this.id = id;
+	    }
+
+	    public String getName() {
+	        return name;
+	    }
+
+	    public void setName(String name) {
+	        this.name = name;
+	    }
+
+	    public double getPrice() {
+	        return price;
+	    }
+
+	    public void setPrice(double price) {
+	        this.price = price;
+	    }
+
+	    public double getDiscountPercent() {
+	        return discountPercent;
+	    }
+
+	    public void setDiscountPercent(double discountPercent) {
+	        this.discountPercent = discountPercent;
+	    }
+
+	    public double calculateDiscountedPrice() {
+	        return price - (price * discountPercent / 100);
+	    }
+	}
+
+
+package com.techlab.shoppingCart;
+
+public class LineItem {
+	private int id;
+    private int quantity;
+    private Product product;
+
+    public LineItem(int id, int quantity, Product product) {
+        this.id = id;
+        this.quantity = quantity;
+        this.product = product;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public double calculateLineItemCost() {
+        return quantity*product.calculateDiscountedPrice();
+    }
+
+}
+package com.techlab.shoppingCart;
+
+import java.util.Date;
+import java.util.List;
+
+public class Order {
+	private int id;
+    private Date date;
+    private List<LineItem> items;
+
+    public Order(int id, Date date, List<LineItem> items) {
+        this.id = id;
+        this.date = date;
+        this.items = items;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public List<LineItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<LineItem> items) {
+        this.items = items;
+    }
+
+    public double calculateOrderPrice() {
+        double totalPrice = 0;
+        for (LineItem item : items) {
+            totalPrice += item.calculateLineItemCost();
+        }
+        return totalPrice;
+    }
+
+}
+package com.techlab.shoppingCart;
+
+import java.util.List;
+
+public class Customer {
+	private int id;
+    private String name;
+    private List<Order> orders;
+
+    public Customer(int id, String name, List<Order> orders) {
+        this.id = id;
+        this.name = name;
+        this.orders = orders;
+    }
+
+    // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+}
+package com.techlab.shoppingCart;
+
+import java.util.ArrayList;
+
+public class TestShoppingCart {
+
+	public static void main(String[] args) {
+		ArrayList<LineItem> cart = new ArrayList<>();
+
+        Product product1 = new Product(1, "RIN", 10.0, 10.0);
+        Product product2 = new Product(2, "OIL", 130.0, 5.0);
+        Product product3 = new Product(3, "RICE", 60.0, 0.0);
+        Product product4 = new Product(4, "SOAP", 25.0, 8.0);
+
+        cart.add(new LineItem(1, 2, product1));
+        cart.add(new LineItem(2, 3, product2));
+        cart.add(new LineItem(3, 1, product3));
+        cart.add(new LineItem(4, 4, product4));
+
+        
+        System.out.println("ID\tName\t\tQuantity\tUnit Price\t\tTotal");
+
+        
+        for (LineItem item : cart) {
+            System.out.printf(
+                "%d\t%s\t\t%d\t\t%.2f\t\t%.2f%n",
+                item.getId(),
+                item.getProduct().getName(),
+                item.getQuantity(),
+                item.getProduct().getPrice(),
+                item.calculateLineItemCost()
+            );
+        }
+        double TotalBill=0;
+        for (LineItem item : cart) {
+        	TotalBill=TotalBill+item.calculateLineItemCost();
+        }
+        System.out.println("\n");
+        System.out.println("TotalBill is:"+TotalBill);
+
+
+	}
+
+}
