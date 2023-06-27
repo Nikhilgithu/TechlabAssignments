@@ -1,0 +1,307 @@
+//----------------------ContactInfo class---------------------------
+class ContactInfo {
+    constructor(type, value) {
+        this.type = type;
+        this.value = value;
+    }
+
+    static validateType(type) {
+        if (typeof type !== 'string' || type.trim() === '') {
+            throw new Error("Invalid Contact Info Type");
+        }
+    }
+
+    static validateValue(value) {
+        if (typeof value !== 'string' || value.trim() === '') {
+            throw new Error("Invalid Contact Info Value");
+        }
+    }
+}
+//----------------------Contact class---------------------------
+
+class ContactInfo {
+    constructor(type, value) {
+        this.type = type;
+        this.value = value;
+    }
+}
+
+class Contact {
+    constructor(cName) {
+        this.cName = cName;
+        this.contactInfos = [];
+    }
+
+    static newContact(cName) {
+        if (typeof cName !== 'string' || cName.trim() === '') {
+            throw new Error("Invalid Contact Name");
+        }
+
+        return new Contact(cName);
+    }
+
+    findContactInfo(type) {
+        for (let index = 0; index < this.contactInfos.length; index++) {
+            if (this.contactInfos[index].type === type) {
+                return [true, index];
+            }
+        }
+        return [false, -1];
+    }
+
+    newContactInfo(type, value) {
+        if (typeof type !== 'string' || type.trim() === '') {
+            throw new Error("Invalid Contact Info Type");
+        }
+
+        if (typeof value !== 'string' || value.trim() === '') {
+            throw new Error("Invalid Contact Info Value");
+        }
+
+        let [isContactInfoExist, indexOfContactInfo] = this.findContactInfo(type);
+        if (isContactInfoExist) {
+            throw new Error("Contact Info Already Exists");
+        }
+
+        const contactInfo = new ContactInfo(type, value);
+        this.contactInfos.push(contactInfo);
+        return contactInfo;
+    }
+
+    updateContactInfo(type, newValue) {
+        if (typeof type !== 'string' || type.trim() === '') {
+            throw new Error("Invalid Contact Info Type");
+        }
+
+        if (typeof newValue !== 'string' || newValue.trim() === '') {
+            throw new Error("Invalid New Value");
+        }
+
+        let [isContactInfoExist, indexOfContactInfo] = this.findContactInfo(type);
+        if (!isContactInfoExist) {
+            throw new Error("Contact Info Does not Exist");
+        }
+
+        // Check if the type is being updated to an existing type
+        if (type !== this.contactInfos[indexOfContactInfo].type && this.findContactInfo(type)[0]) {
+            throw new Error("Contact Info Type Already Exists");
+        }
+
+        this.contactInfos[indexOfContactInfo].type = type;
+        this.contactInfos[indexOfContactInfo].value = newValue;
+    }
+
+    deleteContactInfo(type) {
+        if (typeof type !== 'string' || type.trim() === '') {
+            throw new Error("Invalid Contact Info Type");
+        }
+
+        let [isContactInfoExist, indexOfContactInfo] = this.findContactInfo(type);
+        if (!isContactInfoExist) {
+            throw new Error("Contact Info Does not Exist");
+        }
+
+        this.contactInfos.splice(indexOfContactInfo, 1);
+    }
+}
+
+module.exports = Contact;
+
+//----------------------User class---------------------------
+
+const Contact = require("./contact");
+
+class User {
+    static allUser = [];
+
+    constructor(name, username, isAdmin) {
+        this.name = name;
+        this.username = username;
+        this.isAdmin = isAdmin;
+        this.contacts = [];
+    }
+
+    static findUser(username) {
+        //type validation
+        for (let index = 0; index < User.allUser.length; index++) {
+            if (User.allUser[index].username == username) {
+                return [true, index];
+            }
+        }
+        return [false, -1];
+    }
+
+    findContact(cName) {
+        for (let index = 0; index < this.contacts.length; index++) {
+            if (this.contacts[index].cName == cName) {
+                return [true, index];
+            }
+        }
+        return [false, -1];
+    }
+
+    newContact(cName) {
+        if (typeof cName !== 'string' ) {
+            throw new Error("Invalid name or username in newContact ");
+        }
+        if (this.isAdmin) {
+            throw new Error("Admin Cannot Create Contacts");
+        }
+        let [isContactExist, indexOfContact] = this.findContact(cName);
+        if (isContactExist) {
+            throw new Error("Contact Already Exists");
+        }
+
+        const newContact = Contact.newContact(cName);
+        this.contacts.push(newContact);
+        return newContact;
+    }
+
+    static newAdmin(name, username) {
+        if (typeof name !== 'string' || typeof username !== 'string') {
+            throw new Error("Invalid name or username in newAdmin ");
+        }
+        let [isUserExist, indexOfUserFound] = User.findUser(username);
+        if (isUserExist) {
+            throw new Error("Username Already Exists");
+        }
+        const admin = new User(name, username, true);
+        User.allUser.push(admin);
+        return admin;
+    }
+
+    newUser(name, username) {
+        if (typeof name !== 'string' || typeof username !== 'string') {
+            throw new Error("Invalid name or username");
+        }
+        if (!this.isAdmin) {
+            throw new Error("Unauthorized");
+        }
+        let [isUserExist, indexOfUserFound] = User.findUser(username);
+        if (isUserExist) {
+            throw new Error("Username Already Exists");
+        }
+        const user = new User(name, username, false);
+        User.allUser.push(user);
+        return user;
+    }
+
+    getAllUser() {
+        if (!this.isAdmin) {
+            throw new Error("Unauthorized")
+        }
+
+        if (typeof User.allUser !== 'object') {
+            throw new Error("Invalid User List")
+        }
+
+        return User.allUser
+    }
+
+    updateUser(username, parameter, newValue) {
+        if (!this.isAdmin) {
+            throw new Error("Unauthorized")
+        }
+
+        if (typeof parameter !== 'string' || parameter.trim() === '') {
+            throw new Error("Invalid Parameter")
+        }
+
+        if (typeof newValue !== 'string' || newValue.trim() === '') {
+            throw new Error("Invalid New Value")
+        }
+
+        let [isUserExist, indexOfUserFound] = User.findUser(username)
+        if (!isUserExist) {
+            throw new Error("Username Does not Exist")
+        }
+
+        switch (parameter) {
+            case "name":
+                User.allUser[indexOfUserFound].updateName(newValue)
+                break;
+            case "username":
+                User.allUser[indexOfUserFound].updateUsername(newValue)
+                break;
+            default:
+                throw new Error("Invalid Parameter")
+        }
+    }
+
+    updateName(newName) {
+        //newName string check
+        this.name = newName;
+    }
+
+    updateUsername(newUsername) {
+        let [isUserExist, indexOfUserFound] = User.findUser(newUsername);
+        if (isUserExist) {
+            throw new Error("Username Already Exists");
+        }
+        this.username = newUsername;
+    }
+
+    deleteUser(username) {
+        if (!this.isAdmin) {
+            throw new Error("Unauthorized");
+        }
+        let [isUserExist, indexOfUserFound] = User.findUser(username);
+        if (!isUserExist) {
+            throw new Error("Username Does not Exist");
+        }
+        User.allUser.splice(indexOfUserFound, 1);
+    }
+}
+
+module.exports = User;
+
+
+//----------------------index class---------------------------
+const User = require("./user");
+
+try {
+    // Creating a new admin
+    const admin1 = User.newAdmin("Jay", "admin1");
+    console.log("Admin:", admin1);
+
+    // Creating a new user by the admin
+    const user1 = admin1.newUser("pratik", "user1");
+    console.log("User:", user1);
+
+    // Updating the name of a user
+    admin1.updateUser("user1", "name", "Nikhil");
+    console.log("Updated User:", user1);
+
+    // Creating a new contact by the user
+    const contact1 = user1.newContact("prathmesh");
+    console.log("Contact:", contact1);
+
+    const contact2 = user1.newContact("kundan");
+    console.log("Contact:", contact2);
+
+    // Creating contact details for the contact
+    contact1.newContactInfo("Work", "1245856");
+    contact1.newContactInfo("Mobile", "1234560");
+    console.log("Contact with Details:", contact1);
+    contact2.newContactInfo("Work", "4674479");
+    console.log("Contact with Details:", contact2);
+
+    // Updating a contact Info
+    contact1.updateContactInfo("Mobile", "9876543210");
+    console.log("Updated Contact:", contact1);
+
+    // Deleting a contact Info
+    contact1.deleteContactInfo("Work");
+    console.log("Contact after Deletion:", contact1);
+    console.log("Contact after Deletion:", contact2);
+
+    // Getting all users 
+    const allUsers = admin1.getAllUser();
+    console.log("All Users:", allUsers);
+
+    // Deleting a user 
+    admin1.deleteUser("user1");
+    console.log("All Users after Deletion:", allUsers);
+} catch (error) {
+    console.log("Error:", error.message);
+}
