@@ -1,0 +1,96 @@
+package com.techlab.TicTacToe;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class BoardTest {
+	Board board;
+	@BeforeEach
+	void init()
+	{
+		board=new Board();
+	}
+
+	@Test
+	void testIsBoardFull() throws InvalidLocationException, CellAlraedyMrakedException {
+		assertTrue(!board.isBoardFull());
+		for (int i = 0; i < 9; i++) {
+            board.setCellMark(i, MarkType.X);
+        }
+        assertTrue(board.isBoardFull());
+	}
+
+	@Test
+	void testSetCellMark() throws InvalidLocationException, CellAlraedyMrakedException {
+		board.setCellMark(0, MarkType.X);
+		
+        assertThrows(InvalidLocationException.class, () -> board.setCellMark(-1, MarkType.O));
+
+      
+        assertThrows(CellAlraedyMrakedException.class, () -> board.setCellMark(0, MarkType.O));
+	}
+
+	@Test
+	void testCheckWin() throws InvalidLocationException, CellAlraedyMrakedException {
+		    board.setCellMark(0, MarkType.X);
+		    board.setCellMark(1, MarkType.X);
+		    board.setCellMark(2, MarkType.X);
+		    assertTrue(board.checkWin());
+ 
+		    board.setCellMark(0, MarkType.O);
+		    board.setCellMark(3, MarkType.O);
+		    board.setCellMark(6, MarkType.O);
+		    assertTrue(board.checkWin());
+
+		    board.setCellMark(0, MarkType.X);
+		    board.setCellMark(4, MarkType.X);
+		    board.setCellMark(8, MarkType.X);
+		    assertTrue(board.checkWin());
+		    
+		    
+	}
+
+}
+
+
+package com.techlab.TicTacToe;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class CellTest {
+	Cell cell;
+	@BeforeEach
+	void init()
+	{
+		cell=new Cell();
+	}
+
+	@Test
+	void testIsEmpty()  {
+		assertTrue(cell.isEmpty());
+		
+//		 cell.setMark(MarkType.X);
+//	      assertFalse(cell.isEmpty());
+	}
+
+	@Test
+	void testSetMark() {
+		  
+	            try {
+					cell.setMark(MarkType.X);
+				} catch (CellAlraedyMrakedException e) {
+					
+					e.printStackTrace();
+				}
+	       
+		
+	    CellAlraedyMrakedException exception = assertThrows(CellAlraedyMrakedException.class, () -> cell.setMark(MarkType.O));
+        assertEquals("Cell is already marked", exception.getMessage());
+	}
+
+}
