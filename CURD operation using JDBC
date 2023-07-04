@@ -1,0 +1,486 @@
+package com.techlab.jdbcEmp;
+
+public class Department {
+	private int DEPTNO;
+    private String DNAME;
+    private String LOC;
+
+    public Department(int DEPTNO, String DNAME, String LOC) {
+        this.DEPTNO = DEPTNO;
+        this.DNAME = DNAME;
+        this.LOC = LOC;
+    }
+
+    public int getDEPTNO() {
+        return DEPTNO;
+    }
+
+    public void setDEPTNO(int DEPTNO) {
+        this.DEPTNO = DEPTNO;
+    }
+
+    public String getDNAME() {
+        return DNAME;
+    }
+
+    public void setDNAME(String DNAME) {
+        this.DNAME = DNAME;
+    }
+
+    public String getLOC() {
+        return LOC;
+    }
+
+    public void setLOC(String LOC) {
+        this.LOC = LOC;
+    }
+
+}
+
+
+package com.techlab.jdbcEmp;
+
+public class Employee {
+	 private int EMPNO;
+	    private String ENAME;
+	    private String JOB;
+	    private String Manager;
+	    private String HIREDATE;
+	    private double SAL;
+	    private double COMM;
+	    private int DEPTNO;
+
+	    public Employee(int EMPNO, String ENAME, String JOB, String string, String HIREDATE, double SAL, double COMM, int DEPTNO) {
+	        this.EMPNO = EMPNO;
+	        this.ENAME = ENAME;
+	        this.JOB = JOB;
+	        this.Manager = string;
+	        this.HIREDATE = HIREDATE;
+	        this.SAL = SAL;
+	        this.COMM = COMM;
+	        this.DEPTNO = DEPTNO;
+	    }
+
+	    public int getEMPNO() {
+	        return EMPNO;
+	    }
+
+	    public void setEMPNO(int EMPNO) {
+	        this.EMPNO = EMPNO;
+	    }
+
+	    public String getENAME() {
+	        return ENAME;
+	    }
+
+	    public void setENAME(String ENAME) {
+	        this.ENAME = ENAME;
+	    }
+
+	    public String getJOB() {
+	        return JOB;
+	    }
+
+	    public void setJOB(String JOB) {
+	        this.JOB = JOB;
+	    }
+
+	    public String getManager() {
+	        return Manager;
+	    }
+
+	    public void setManager(String Manager) {
+	        this.Manager = Manager;
+	    }
+
+	    public String getHIREDATE() {
+	        return HIREDATE;
+	    }
+
+	    public void setHIREDATE(String HIREDATE) {
+	        this.HIREDATE = HIREDATE;
+	    }
+
+	    public double getSAL() {
+	        return SAL;
+	    }
+
+	    public void setSAL(double SAL) {
+	        this.SAL = SAL;
+	    }
+
+	    public double getCOMM() {
+	        return COMM;
+	    }
+
+	    public void setCOMM(double COMM) {
+	        this.COMM = COMM;
+	    }
+
+	    public int getDEPTNO() {
+	        return DEPTNO;
+	    }
+
+	    public void setDEPTNO(int DEPTNO) {
+	        this.DEPTNO = DEPTNO;
+	    }
+
+
+}
+
+
+package com.techlab.jdbcEmp;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+
+public class DBConnection {
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/";
+    private static final String DB_NAME = "company";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "Nikhil@123";
+
+    public static Connection connect() throws SQLException {
+        Connection connection = DriverManager.getConnection(DB_URL + DB_NAME, DB_USER, DB_PASSWORD);
+        System.out.println("Connected to the database successfully.");
+        return connection;
+    }
+
+    public static void createCompanyDb() {
+        try (Connection connection = connect();
+             Statement statement = connection.createStatement()) {
+            String query = "CREATE DATABASE IF NOT EXISTS " + DB_NAME;
+            statement.executeUpdate(query);
+            System.out.println("Company database created successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createDepartmentTable() {
+        try (Connection connection = connect();
+             Statement statement = connection.createStatement()) {
+            String query = "CREATE TABLE IF NOT EXISTS Department (" +
+                    "DEPTNO INT PRIMARY KEY," +
+                    "DNAME VARCHAR(50) NOT NULL," +
+                    "LOC VARCHAR(50) NOT NULL)";
+            statement.executeUpdate(query);
+            System.out.println("Department table created successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createEmployeeTable() {
+        try (Connection connection = connect();
+             Statement statement = connection.createStatement()) {
+            String query = "CREATE TABLE IF NOT EXISTS Employee (" +
+                    "EMPNO INT PRIMARY KEY," +
+                    "ENAME VARCHAR(50) NOT NULL," +
+                    "JOB VARCHAR(50) NOT NULL," +
+                    "MANAGER INT," +
+                    "HIREDATE DATE," +
+                    "SAL DECIMAL(10, 2)," +
+                    "COMM DECIMAL(10, 2)," +
+                    "DEPTNO INT NOT NULL," +
+                    "FOREIGN KEY (DEPTNO) REFERENCES Department(DEPTNO))";
+            statement.executeUpdate(query);
+            System.out.println("Employee table created successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+package com.techlab.jdbcEmp;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Operation {
+
+    public static void insertDepartment(Department department) {
+        try (Connection connection = DBConnection.connect();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO Department VALUES (?, ?, ?)")) {
+            statement.setInt(1, department.getDEPTNO());
+            statement.setString(2, department.getDNAME());
+            statement.setString(3, department.getLOC());
+            statement.executeUpdate();
+            System.out.println("Department record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void insertEmployee(Employee employee) {
+        try (Connection connection = DBConnection.connect();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO Employee VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+            statement.setInt(1, employee.getEMPNO());
+            statement.setString(2, employee.getENAME());
+            statement.setString(3, employee.getJOB());
+            statement.setString(4, employee.getManager());
+            statement.setString(5, employee.getHIREDATE());
+            statement.setDouble(6, employee.getSAL());
+            statement.setDouble(7, employee.getCOMM());
+            statement.setInt(8, employee.getDEPTNO());
+            statement.executeUpdate();
+            System.out.println("Employee record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ResultSet getEmployeesByDepartment(String departmentName) {
+        try {
+            Connection connection = DBConnection.connect();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Employee WHERE DEPTNO IN (SELECT DEPTNO FROM Department WHERE DNAME = ?)");
+            statement.setString(1, departmentName);
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void updateEmployeeCommission(double increasePercentage) {
+        try (Connection connection = DBConnection.connect();
+             Statement statement = connection.createStatement()) {
+            String query = "UPDATE Employee SET COMM = COMM + (COMM * " + increasePercentage / 100 + ")";
+            statement.executeUpdate(query);
+            System.out.println("Employee records updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void insertEmployeeInHRDepartment(Employee employee) {
+        try (Connection connection = DBConnection.connect();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO Employee VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+            statement.setInt(1, employee.getEMPNO());
+            statement.setString(2, employee.getENAME());
+            statement.setString(3, employee.getJOB());
+            statement.setString(4, employee.getManager());
+            statement.setString(5, employee.getHIREDATE());
+            statement.setDouble(6, employee.getSAL());
+            statement.setDouble(7, employee.getCOMM());
+            statement.setInt(8, 1); // Assuming HR department's DEPTNO is 1
+            statement.executeUpdate();
+            System.out.println("Employee record inserted into HR department successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteEmployeesWithSalaryLessThan(double salary) {
+        try (Connection connection = DBConnection.connect();
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM Employee WHERE SAL < ?")) {
+            statement.setDouble(1, salary);
+            int affectedRows = statement.executeUpdate();
+            System.out.println(affectedRows + " employee(s) deleted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ResultSet getAllEmployees() {
+        try {
+            Connection connection = DBConnection.connect();
+            Statement statement = connection.createStatement();
+            return statement.executeQuery("SELECT * FROM Employee");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ResultSet getAllDepartments() {
+        try {
+            Connection connection = DBConnection.connect();
+            Statement statement = connection.createStatement();
+            return statement.executeQuery("SELECT * FROM Department");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+
+package com.techlab.jdbcEmp;
+import java.util.Scanner;
+import java.util.List;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+
+public class Main {
+	public static void main(String[] args) {
+	    try {
+	        // Establish the database connection and create tables
+	        DBConnection.createCompanyDb();
+	        DBConnection.createDepartmentTable();
+	        DBConnection.createEmployeeTable();
+
+	        Scanner scanner = new Scanner(System.in);
+	        int choice;
+	        do {
+	            System.out.println("Menu:");
+	            System.out.println("1. Insert Records into Department");
+	            System.out.println("2. Insert Records into Employee");
+	            System.out.println("3. Display all Employees in a particular Department");
+	            System.out.println("4. Update Records of Employees (increase commission by 20%)");
+	            System.out.println("5. Insert New Employee in the HR Department");
+	            System.out.println("6. Delete Employees having Salary less than...");
+	            System.out.println("7. Display all Employees");
+	            System.out.println("8. Display all Departments");
+	            System.out.println("0. Exit");
+	            System.out.print("Enter your choice: ");
+	            choice = scanner.nextInt();
+
+	            switch (choice) {
+	                case 1:
+	                    System.out.println("Enter department number: ");
+	                    int deptNo = scanner.nextInt();
+	                    System.out.println("Enter department name: ");
+	                    String deptName = scanner.next();
+	                    System.out.println("Enter department location: ");
+	                    String deptLocation = scanner.next();
+	                    Operation.insertDepartment(new Department(deptNo, deptName, deptLocation));
+	                    break;
+	                case 2:
+	                    System.out.println("Enter employee number: ");
+	                    int empNo = scanner.nextInt();
+	                    System.out.println("Enter employee name: ");
+	                    String empName = scanner.next();
+	                    System.out.println("Enter employee job: ");
+	                    String empJob = scanner.next();
+	                    System.out.println("Enter employee manager: ");
+	                    String empManager = scanner.next();
+	                    System.out.println("Enter employee hire date (YYYY-MM-DD): ");
+	                    String empHireDate = scanner.next();
+	                    System.out.println("Enter employee salary: ");
+	                    double empSalary = scanner.nextDouble();
+	                    System.out.println("Enter employee commission: ");
+	                    double empCommission = scanner.nextDouble();
+	                    System.out.println("Enter employee department number: ");
+	                    int empDeptNo = scanner.nextInt();
+	                    Operation.insertEmployee(new Employee(empNo, empName, empJob, empManager, empHireDate, empSalary,
+	                            empCommission, empDeptNo));
+	                    break;
+	                case 3:
+	                    System.out.println("Enter department name: ");
+	                    String departmentName = scanner.next();
+	                    ResultSet employeeResultSet = Operation.getEmployeesByDepartment(departmentName);
+	                    if (employeeResultSet != null) {
+	                        System.out.println("Employees in the department:");
+	                        while (employeeResultSet.next()) {
+	                            int employeeId = employeeResultSet.getInt("EMPNO");
+	                            String employeeName = employeeResultSet.getString("ENAME");
+	                            String job = employeeResultSet.getString("JOB");
+	                            int managerId = employeeResultSet.getInt("MANAGER");
+	                            String hireDate = employeeResultSet.getString("HIREDATE");
+	                            double salary = employeeResultSet.getDouble("SAL");
+	                            double commission = employeeResultSet.getDouble("COMM");
+	                            int deptNo1 = employeeResultSet.getInt("DEPTNO");
+	                            System.out.println("Employee ID: " + employeeId +
+	                                    ", Name: " + employeeName +
+	                                    ", Job: " + job +
+	                                    ", Manager ID: " + managerId +
+	                                    ", Hire Date: " + hireDate +
+	                                    ", Salary: " + salary +
+	                                    ", Commission: " + commission +
+	                                    ", Department Number: " + deptNo1);
+	                        }
+	                    } else {
+	                        System.out.println("No employees found in the department.");
+	                    }
+	                    break;
+	                case 4:
+	                    Operation.updateEmployeeCommission(20);
+	                    break;
+	                case 5:
+	                    System.out.println("Enter employee number: ");
+	                    int empNum = scanner.nextInt();
+	                    System.out.println("Enter employee name: ");
+	                    String empNam = scanner.next();
+	                    System.out.println("Enter employee job: ");
+	                    String empJobe = scanner.next();
+	                    System.out.println("Enter employee manager: ");
+	                    String empManag = scanner.next();
+	                    System.out.println("Enter employee hire date (YYYY-MM-DD): ");
+	                    String empHireDat = scanner.next();
+	                    System.out.println("Enter employee salary: ");
+	                    double empSalar = scanner.nextDouble();
+	                    System.out.println("Enter employee commission: ");
+	                    double empCommissio = scanner.nextDouble();
+	                    Operation.insertEmployeeInHRDepartment(new Employee(empNum, empNam, empJobe, empManag, empHireDat,
+	                            empSalar, empCommissio, 1));
+	                    break;
+	                case 6:
+	                    System.out.println("Enter the salary limit: ");
+	                    double salaryLimit = scanner.nextDouble();
+	                    Operation.deleteEmployeesWithSalaryLessThan(salaryLimit);
+	                    break;
+	                case 7:
+	                    ResultSet allEmployeesResultSet = Operation.getAllEmployees();
+	                    if (allEmployeesResultSet != null) {
+	                        System.out.println("All Employees:");
+	                        while (allEmployeesResultSet.next()) {
+	                            int employeeId = allEmployeesResultSet.getInt("EMPNO");
+	                            String employeeName = allEmployeesResultSet.getString("ENAME");
+	                            String job = allEmployeesResultSet.getString("JOB");
+	                            int managerId = allEmployeesResultSet.getInt("MANAGER");
+	                            String hireDate = allEmployeesResultSet.getString("HIREDATE");
+	                            double salary = allEmployeesResultSet.getDouble("SAL");
+	                            double commission = allEmployeesResultSet.getDouble("COMM");
+	                            int deptNo1 = allEmployeesResultSet.getInt("DEPTNO");
+	                            System.out.println("Employee ID: " + employeeId +
+	                                    ", Name: " + employeeName +
+	                                    ", Job: " + job +
+	                                    ", Manager ID: " + managerId +
+	                                    ", Hire Date: " + hireDate +
+	                                    ", Salary: " + salary +
+	                                    ", Commission: " + commission +
+	                                    ", Department Number: " + deptNo1);
+	                        }
+	                    } else {
+	                        System.out.println("No employees found.");
+	                    }
+	                    break;
+	                case 8:
+	                    ResultSet allDepartmentsResultSet = Operation.getAllDepartments();
+	                    if (allDepartmentsResultSet != null) {
+	                        System.out.println("All Departments:");
+	                        while (allDepartmentsResultSet.next()) {
+	                            int deptNo1 = allDepartmentsResultSet.getInt("DEPTNO");
+	                            String deptName1 = allDepartmentsResultSet.getString("DNAME");
+	                            String deptLocation1 = allDepartmentsResultSet.getString("LOC");
+	                            System.out.println("Department Number: " + deptNo1 +
+	                                    ", Name: " + deptName1 +
+	                                    ", Location: " + deptLocation1);
+	                        }
+	                    } else {
+	                        System.out.println("No departments found.");
+	                    }
+	                    break;
+	                case 0:
+	                    System.out.println("Thank you! Visit again...");
+	                    break;
+	                default:
+	                    System.out.println("Invalid choice. Please try again.");
+	                    break;
+	            }
+	            System.out.println();
+	        } while (choice != 0);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+}
